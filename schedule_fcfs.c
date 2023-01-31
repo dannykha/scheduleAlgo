@@ -11,7 +11,6 @@
 #include "stdbool.h"
 
 struct node *g_head = NULL;
-int taskCnt = 0;
 
 void add(char *name, int priority, int burst) {
     Task* tempTask = (Task*) malloc(sizeof(Task));
@@ -19,18 +18,20 @@ void add(char *name, int priority, int burst) {
     tempTask->priority = priority;
     tempTask->burst = burst;
     insert(&g_head, tempTask);
-    taskCnt++;
 }
 
-bool comesBefore(char *a, char *b) { return strcmp(a, b) < 0; }
+bool comesBefore(char *a, char *b) { 
+  return strcmp(a, b) < 0; 
+}
 
 // based on traverse from list.c
 // finds the task whose name comes first in dictionary
 Task *pickNextTask() {
   // if list is empty, nothing to do
-  if (!g_head)
+  if (!g_head) {
     return NULL;
-
+  }
+  
   struct node *temp;
   temp = g_head;
   Task *best_sofar = temp->task;
