@@ -3,6 +3,7 @@
 #include "list.h"
 #include "schedulers.h"
 #include "task.h"
+#include "cpu.h"
 
 #include "stdlib.h"
 #include "stdio.h"
@@ -44,16 +45,23 @@ Task *pickNextTask() {
   return best_sofar;
 }
 
+void cpuUtilitization(int totalTime, int dispatcherTime) {
+  float result;
+  result = (totalTime / (float)dispatcherTime) * 100;
+  printf("CPU Utilization: %.2f%%\n", result);
+}
+
 void schedule() {
     int currTime = 0;
-    int switchCnt = 0;
-
+    int switchTime = 0;
+    
     while(g_head) {
         Task *task = pickNextTask();
         run(task, task->burst);
-        switchCnt++;
         currTime += task->burst;
+        switchTime++;
         printf("Time is now : %d\n", currTime);
-        delete(&g_head, task);
     }
+    int dispatcherTime = currTime + switchTime - 1;
+    cpuUtilitization(currTime, dispatcherTime);
 }
