@@ -37,12 +37,9 @@ Task *pickNextTask() {
   while (temp != NULL) {
     // if the priority of the best so far is the smallest then keep picking that one
     if (temp->task->priority < best_sofar->priority) {
+      if (comesBefore(temp->task->name, best_sofar->name)) {
         best_sofar = temp->task;
-    }
-    else if (temp->task->priority == best_sofar->priority) {
-        if (comesBefore(temp->task->name, best_sofar->name)) {
-            best_sofar = temp->task;
-        }
+      }
     }
     temp = temp->next;
   }
