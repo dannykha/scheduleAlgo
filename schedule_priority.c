@@ -36,7 +36,7 @@ Task *pickNextTask() {
 
   while (temp != NULL) {
     // if the priority of the best so far is the smallest then keep picking that one
-    if (temp->task->priority < best_sofar->priority) {
+    if (temp->task->priority > best_sofar->priority) {
       if (comesBefore(temp->task->name, best_sofar->name)) {
         best_sofar = temp->task;
       }
@@ -63,7 +63,7 @@ void schedule() {
         run(task, task->burst);
         currTime += task->burst;
         switchTime++;
-        printf("Time is now : %d\n", currTime);
+        printf("%22s%d\n", "Time is now : ", currTime);
     }
     int dispatcherTime = currTime + switchTime - 1;
     cpuUtilitization(currTime, dispatcherTime);

@@ -67,7 +67,7 @@ void schedule() {
         run(task, task->burst);
         currTime += task->burst;
         switchTime++;
-        printf("Time is now : %d\n", currTime);
+        printf("%22s%d\n", "Time is now : ", currTime);
     }
     int dispatcherTime = currTime + switchTime - 1;
     cpuUtilitization(currTime, dispatcherTime);
