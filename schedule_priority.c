@@ -1,4 +1,11 @@
-
+/*
+* file: schedule_priority.c
+* author: Danny Kha
+* CSS 430
+* P3: Scheduling Algorithms
+* Due: 2/12/23
+*
+*/
 
 #include "list.h"
 #include "schedulers.h"
@@ -24,8 +31,9 @@ bool comesBefore(char *a, char *b) {
   return strcmp(a, b) < 0; 
 }
 
+// function to pick next task with priority
 Task *pickNextTask() {
-  // if list is empty, nothing to do
+  // if list is empty nothing to do
   if (!g_head) {
     return NULL;
   }
@@ -35,7 +43,6 @@ Task *pickNextTask() {
   Task *best_sofar = temp->task;
 
   while (temp != NULL) {
-    // if the priority of the best so far is the smallest then keep picking that one
     if (temp->task->priority > best_sofar->priority) {
       if (comesBefore(temp->task->name, best_sofar->name)) {
         best_sofar = temp->task;
@@ -43,28 +50,27 @@ Task *pickNextTask() {
     }
     temp = temp->next;
   }
-  // delete the node from list, Task will get deleted later
   delete (&g_head, best_sofar);
   return best_sofar;
 }
 
-void cpuUtilitization(int totalTime, int dispatcherTime) {
-  float result;
-  result = (totalTime / (float)dispatcherTime) * 100;
-  printf("CPU Utilization: %.2f%%\n", result);
+// function to print cpu utilization
+void printCPUutil(int totalTime, int dispatcherTime) {
+  printf("CPU Utilization: %.2f%%\n", (float)totalTime / dispatcherTime * 100);
 }
 
+// function to schedule based on priority order
 void schedule() {
-    int currTime = 0;
-    int switchTime = 0;
-    
-    while(g_head) {
-        Task *task = pickNextTask();
-        run(task, task->burst);
-        currTime += task->burst;
-        switchTime++;
-        printf("%22s%d\n", "Time is now : ", currTime);
-    }
-    int dispatcherTime = currTime + switchTime - 1;
-    cpuUtilitization(currTime, dispatcherTime);
+  int currTime = 0;
+  int switchTime = 0;
+  
+  while(g_head) {
+    Task *task = pickNextTask();
+    run(task, task->burst);
+    currTime += task->burst;
+    switchTime++;
+    printf("%22s%d\n", "Time is now : ", currTime);
+  }
+  int dispatcherTime = currTime + switchTime - 1;
+  printCPUutil(currTime, dispatcherTime);
 }

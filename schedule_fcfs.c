@@ -1,4 +1,11 @@
-
+/*
+* file: schedule_fcfs.c
+* author: Danny Kha
+* CSS 430
+* P3: Scheduling Algorithms
+* Due: 2/12/23
+*
+*/
 
 #include "list.h"
 #include "schedulers.h"
@@ -24,10 +31,9 @@ bool comesBefore(char *a, char *b) {
   return strcmp(a, b) < 0; 
 }
 
-// based on traverse from list.c
-// finds the task whose name comes first in dictionary
+// function to pick next task
 Task *pickNextTask() {
-  // if list is empty, nothing to do
+  // if list is empty do nothing
   if (!g_head) {
     return NULL;
   }
@@ -37,8 +43,9 @@ Task *pickNextTask() {
   Task *best_sofar = temp->task;
 
   while (temp != NULL) {
-    if (comesBefore(temp->task->name, best_sofar->name))
+    if (comesBefore(temp->task->name, best_sofar->name)) {
       best_sofar = temp->task;
+    }
     temp = temp->next;
   }
   // delete the node from list, Task will get deleted later
@@ -46,23 +53,23 @@ Task *pickNextTask() {
   return best_sofar;
 }
 
-void cpuUtilitization(int totalTime, int dispatcherTime) {
-  float result;
-  result = (totalTime / (float)dispatcherTime) * 100;
-  printf("CPU Utilization: %.2f%%\n", result);
+// function to print cpu utilization
+void printCPUutil(int totalTime, int dispatcherTime) {
+  printf("CPU Utilization: %.2f%%\n", (float)totalTime / dispatcherTime * 100);
 }
 
+// function to schedule in fcfs
 void schedule() {
-    int currTime = 0;
-    int switchTime = 0;
-    
-    while(g_head) {
-        Task *task = pickNextTask();
-        run(task, task->burst);
-        currTime += task->burst;
-        switchTime++;
-        printf("%22s%d\n", "Time is now : ", currTime);
-    }
-    int dispatcherTime = currTime + switchTime - 1;
-    cpuUtilitization(currTime, dispatcherTime);
+  int currTime = 0;
+  int switchTime = 0;
+  
+  while(g_head) {
+    Task *task = pickNextTask();
+    run(task, task->burst);
+    currTime += task->burst;
+    switchTime++;
+    printf("%22s%d\n", "Time is now : ", currTime);
+  }
+  int dispatcherTime = currTime + switchTime - 1;
+  printCPUutil(currTime, dispatcherTime);
 }

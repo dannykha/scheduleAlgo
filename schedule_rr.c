@@ -1,4 +1,11 @@
-
+/*
+* file: schedule_rr.c
+* author: Danny Kha
+* CSS 430
+* P3: Scheduling Algorithms
+* Due: 2/12/23
+*
+*/
 
 #include "list.h"
 #include "schedulers.h"
@@ -26,86 +33,60 @@ bool comesBefore(char *a, char *b) {
   return strcmp(a, b) < 0; 
 }
 
+// function to pick next task in terms of round robin
+// uses a variable minRuns to track how many runs each task has gotten so far
 Task *pickNextTask() {
-  // if list is empty, nothing to do
+  // if list is empty nothing to do
   if (!g_head) {
     return NULL;
   }
 
   struct node *temp;
   temp = g_head;
-  Task *best_sofar = temp->task; 
-  int minRuns = temp->task->runsNum;
+  Task *best_sofar = temp->task;
+  int minRuns = temp->task->timesRun;
 
-  while (temp) {
-    if (temp->task->runsNum <= minRuns) {
-      minRuns = temp->task->runsNum;
+  while (temp != NULL) {
+    if (temp->task->timesRun <= minRuns) {
+      minRuns = temp->task->timesRun;
       best_sofar = temp->task;
     }
     temp = temp->next;
   }
-
-  temp = g_head;
-
-  while (temp) {
-    if (temp->task->runsNum == minRuns) {
-      best_sofar = temp->task;
-    }
-    temp = temp->next;
-  }
-
   delete (&g_head, best_sofar);
   return best_sofar;
 }
 
-void cpuUtilitization(int totalTime, int dispatcherTime) {
-  float result;
-  result = (totalTime / (float)dispatcherTime) * 100;
-  printf("CPU Utilization: %.2f%%\n", result);
+// print the cpu utilization
+void printCPUutil(int totalTime, int dispatcherTime) {
+  printf("CPU Utilization: %.2f%%\n", (float)totalTime / dispatcherTime * 100);
 }
 
+// scheduler and ensuring each task only gets the time quantum of 10
+// or how much time to run they have left
 void schedule() {
-    int currTime = 0;
-    int switchTime = 0;
-
-    struct node *temp;
-    temp = g_head;
-
-    while (temp) {
-      Task* task = pickNextTask();
-      if (task->burst >= timeQ) {
-        run(task, timeQ);
-        task->runsNum++;
-        currTime += timeQ;
-        switchTime++;
-        task->burst -= timeQ;
-
-        if (task->burst == 0) {
-          printf("%22s%d\n", "Time is now : ", currTime);
-          continue;
-        }
-        insert(&g_head, task);
-
-      }
-      else {
-        if (task->burst == 0) {
-          continue;
-        }
-        run(task, task->burst);
-        task->runsNum++;
-        currTime += task->burst;
-        switchTime++;
-        task->burst -= task->burst;
-      }
-      printf("%22s%d\n", "Time is now : ", currTime);
-      temp = temp->next;
-
-      if (temp == NULL) {
-        if (g_head != NULL) {
-          temp = g_head;
-        }
-      }
+  int currTime = 0;
+  int switchTime = 0;
+  
+  while (g_head != NULL) {
+    Task *task = pickNextTask();
+    int timeToRun;
+    if (task->burst <= timeQ) {
+      timeToRun = task->burst;
+    } 
+    else {
+      timeToRun = timeQ;
+    }
+    run(task, timeToRun);
+    task->timesRun++;
+    currTime += timeToRun;
+    switchTime++;
+    task->burst -= timeToRun;
+    if (task->burst > 0) {
+      insert(&g_head, task);
+    }
+    printf("%22s%d\n", "Time is now : ", currTime);
   }
   int dispatcherTime = currTime + switchTime - 1;
-  cpuUtilitization(currTime, dispatcherTime);
+  printCPUutil(currTime, dispatcherTime);
 }
