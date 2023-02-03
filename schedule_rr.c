@@ -21,11 +21,12 @@ const int timeQ = 10;
 
 struct node *g_head = NULL;
 
-void add(char *name, int priority, int burst) {
+void add(char *name, int priority, int burst, int arrival) {
     Task* tempTask = (Task*) malloc(sizeof(Task));
     tempTask->name = name;
     tempTask->priority = priority;
     tempTask->burst = burst;
+    tempTask->arrival = arrival;
     insert(&g_head, tempTask);
 }
 
@@ -62,11 +63,39 @@ void printCPUutil(int totalTime, int dispatcherTime) {
   printf("CPU Utilization: %.2f%%\n", (float)totalTime / dispatcherTime * 100);
 }
 
+// function to print TAT, WT, and RT
+void print_stats(char* taskList[MAX_TASKS], int TAT[MAX_TASKS], int WT[MAX_TASKS], int RT[MAX_TASKS], int numTasks) {
+  printf("---|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %s |", taskList[i]);
+  }
+  printf("\nTAT|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %3d|", TAT[i]);
+  }
+  printf("\n WT|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %3d|", WT[i]);
+  }
+  printf("\n RT|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %3d|", RT[i]);
+  }
+  printf("\n");
+}
+
 // scheduler and ensuring each task only gets the time quantum of 10
 // or how much time to run they have left
 void schedule() {
   int currTime = 0;
   int switchTime = 0;
+  int taskIndex = 0;
+
+  // arrays to store task list, TAT, WT, and RT
+  char* taskList[MAX_TASKS];
+  int TAT[MAX_TASKS];
+  int WT[MAX_TASKS];
+  int RT[MAX_TASKS];
   
   while (g_head != NULL) {
     Task *task = pickNextTask();
@@ -85,8 +114,17 @@ void schedule() {
     if (task->burst > 0) {
       insert(&g_head, task);
     }
+    taskList[taskIndex] = task->name;
+    TAT[taskIndex] = currTime;
+    WT[taskIndex] = TAT[taskIndex] - timeToRun;
+    RT[taskIndex] = TAT[taskIndex] - timeToRun;
+    taskIndex++;
     printf("%22s%d\n", "Time is now : ", currTime);
   }
+  // print CPU utilization
   int dispatcherTime = currTime + switchTime - 1;
   printCPUutil(currTime, dispatcherTime);
+
+  // print TAT, RT, and WT
+  print_stats(taskList, TAT, WT, RT, taskIndex);
 }

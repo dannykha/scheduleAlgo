@@ -19,11 +19,12 @@
 
 struct node *g_head = NULL;
 
-void add(char *name, int priority, int burst) {
+void add(char *name, int priority, int burst, int arrival) {
     Task* tempTask = (Task*) malloc(sizeof(Task));
     tempTask->name = name;
     tempTask->priority = priority;
     tempTask->burst = burst;
+    tempTask->arrival = arrival;
     insert(&g_head, tempTask);
 }
 
@@ -64,20 +65,57 @@ void printCPUutil(int totalTime, int dispatcherTime) {
   printf("CPU Utilization: %.2f%%\n", (float)totalTime / dispatcherTime * 100);
 }
 
+// function to print TAT, WT, and RT
+void print_stats(char* taskList[MAX_TASKS], int TAT[MAX_TASKS], int WT[MAX_TASKS], int RT[MAX_TASKS], int numTasks) {
+  printf("---|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %s |", taskList[i]);
+  }
+  printf("\nTAT|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %3d|", TAT[i]);
+  }
+  printf("\n WT|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %3d|", WT[i]);
+  }
+  printf("\n RT|");
+  for (int i = 0; i < numTasks; i++) {
+    printf(" %3d|", RT[i]);
+  }
+  printf("\n");
+}
+
 // function to schedule with shortest job first
 void schedule() {
   int currTime = 0;
   int switchTime = 0;
+  int taskIndex = 0;
+
+  // arrays to store task list, TAT, WT, and RT
+  char* taskList[MAX_TASKS];
+  int TAT[MAX_TASKS];
+  int WT[MAX_TASKS];
+  int RT[MAX_TASKS];
   
   while(g_head) {
     Task *task = pickNextTask();
     run(task, task->burst);
     currTime += task->burst;
     switchTime++;
+    taskList[taskIndex] = task->name;
+    TAT[taskIndex] = currTime;
+    WT[taskIndex] = TAT[taskIndex] - task->burst;
+    RT[taskIndex] = TAT[taskIndex] - task->burst;
+    taskIndex++;
     printf("%22s%d\n", "Time is now : ", currTime);
   }
+  // print CPU utilization
   int dispatcherTime = currTime + switchTime - 1;
   printCPUutil(currTime, dispatcherTime);
+
+  // print TAT, RT, and WT
+  print_stats(taskList, TAT, WT, RT, taskIndex);
 }
 
 
