@@ -44,6 +44,9 @@ Task *pickNextTask() {
 
   while (temp != NULL) {
     if (temp->task->priority > best_sofar->priority) {
+      best_sofar = temp->task;
+    }
+    if (temp->task->priority == best_sofar->priority) {
       if (comesBefore(temp->task->name, best_sofar->name)) {
         best_sofar = temp->task;
       }
