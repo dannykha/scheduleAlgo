@@ -21,12 +21,11 @@ const int timeQ = 10;
 
 struct node *g_head = NULL;
 
-void add(char *name, int priority, int burst, int arrival) {
+void add(char *name, int priority, int burst) {
     Task* tempTask = (Task*) malloc(sizeof(Task));
     tempTask->name = name;
     tempTask->priority = priority;
     tempTask->burst = burst;
-    tempTask->arrival = arrival;
     insert(&g_head, tempTask);
 }
 
