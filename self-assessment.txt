@@ -1,0 +1,14 @@
+Danny Kha
+CSS 430
+Scheduling Algorithms
+Self Assessment
+
+FCFS Implementation - 5/5
+SJF Implementation - 5/5
+Priority Implementation - 5/5
+RoundRobin Implementation - 5/5
+Priority_RR Implementation - 5/5
+Bonus CPU Utilization - 2/2
+Bonus Table Information - 3/3
+
+Total: 30/25
