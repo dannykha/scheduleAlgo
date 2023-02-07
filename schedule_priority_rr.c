@@ -23,12 +23,12 @@ const int timeQ = 10;
 int completionTime = 0;
 
 void add(char *name, int priority, int burst) {
-    Task* tempTask = (Task*) malloc(sizeof(Task));
-    tempTask->name = name;
-    tempTask->priority = priority;
-    tempTask->burst = burst;
-    insert(&g_head, tempTask);
-    completionTime += burst;
+  Task* tempTask = (Task*) malloc(sizeof(Task));
+  tempTask->name = name;
+  tempTask->priority = priority;
+  tempTask->burst = burst;
+  insert(&g_head, tempTask);
+  completionTime += burst;
 }
 
 bool comesBefore(char *a, char *b) { 

@@ -22,11 +22,11 @@ const int timeQ = 10;
 struct node *g_head = NULL;
 
 void add(char *name, int priority, int burst) {
-    Task* tempTask = (Task*) malloc(sizeof(Task));
-    tempTask->name = name;
-    tempTask->priority = priority;
-    tempTask->burst = burst;
-    insert(&g_head, tempTask);
+  Task* tempTask = (Task*) malloc(sizeof(Task));
+  tempTask->name = name;
+  tempTask->priority = priority;
+  tempTask->burst = burst;
+  insert(&g_head, tempTask);
 }
 
 bool comesBefore(char *a, char *b) { 
