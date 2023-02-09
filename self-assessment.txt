@@ -8,7 +8,7 @@ SJF Implementation - 5/5
 Priority Implementation - 5/5
 RoundRobin Implementation - 5/5
 Priority_RR Implementation - 5/5
-Bonus CPU Utilization - 2/2
-Bonus Table Information - 3/3
+Bonus CPU Utilization - 2/0
+Bonus Table Information - 3/0
 
 Total: 30/25
