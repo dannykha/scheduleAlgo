@@ -107,7 +107,7 @@ void schedule() {
     WT[taskIndex] = TAT[taskIndex] - task->burst;
     RT[taskIndex] = TAT[taskIndex] - task->burst;
     taskIndex++;
-    printf("%22s%d\n", "Time is now: ", currTime);
+    printf("%21s%d\n", "Time is now: ", currTime);
   }
   // print CPU utilization
   int dispatcherTime = currTime + switchTime - 1;
