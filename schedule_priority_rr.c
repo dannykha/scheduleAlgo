@@ -75,6 +75,7 @@ Task *pickNextTask() {
   return best_sofar;
 }
 
+// function to print CPU utilization
 void printCPUutil(int totalTime, int dispatcherTime) {
   printf("CPU Utilization: %.2f%%\n", (float)totalTime / dispatcherTime * 100);
 }
